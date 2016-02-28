@@ -1,0 +1,143 @@
+
+public class BinaryTree {
+	Node root;
+	
+	public boolean delNode(int key) {
+		Node focusNode = root;
+		Node parent = root;
+		boolean isItALeftChild = true;
+
+		while (focusNode.key != key) {
+			parent = focusNode;
+			if (key < focusNode.key) {
+				isItALeftChild = true;
+				focusNode = focusNode.left;
+			} else {
+				isItALeftChild = false;
+				focusNode = focusNode.right;
+			}
+			if (focusNode == null)
+				return false;
+		}
+		if (focusNode.left == null && focusNode.right == null) {
+			if (focusNode == root) {
+				root = null;
+			} else if (isItALeftChild) {
+				parent.left = null;
+			} else {
+				parent.right = null;
+			}
+		} else if (focusNode.right == null) {
+			if (focusNode == root) {
+				root = focusNode.left;
+			} else if (isItALeftChild) {
+				parent.left = focusNode.left;
+			} else {
+				parent.right = focusNode.left;
+			}
+		} else if (focusNode.left == null) {
+			if (focusNode == root) {
+				root = focusNode.right;
+			} else if (isItALeftChild) {
+				parent.left = focusNode.right;
+			} else {
+				parent.right = focusNode.left;
+			}
+		} else {
+			Node replace = getReplacementNode(focusNode);
+			if (focusNode == root) {
+				root = replacement;
+			} else if (isItALeftChild) {
+				parent.left = replacement;
+			} else {
+				parent.right = replacement;
+			}
+			replacement.left = focusNode.left;
+				
+		}
+		return true;
+	}
+
+	private Node getReplacementNode(Node toBeReplacedNode) {
+		Node replacementParent = toBeReplacedNode;
+		Node replacement = toBeReplacedNode;
+		Node focusNode = toBeReplacedNode.right;
+		
+		while (focusNode != null) {
+			replacementParent = replacement;
+			replacement = focusNode;
+			focusNode = focusNode.left;
+		}
+		if (replacement != toBeReplacedNode.right) {
+			replacementParent.left = replacement.right;
+			replacement.right = toBeReplacedNode.right;
+		}
+		return replacement;
+	}
+	
+	public void addNode(int key, String name) {
+		Node newNode = new Node(key, name);
+		if (root == null) {
+			root = newNode;
+		} else {
+			Node focusNode = root;
+			Node parent;
+			while (true) {
+				parent = focusNode;
+				if (key < focusNode.key) {
+					focusNode = focusNode.left;
+					if (focusNode == null) {
+						parent.left = newNode;
+						return;
+					}
+				} else {
+					focusNode = focusNode.right;
+					if (focusNode == null) {
+						parent.right = newNode;
+						return;
+					}
+				}
+			}
+		}
+	} // addNode
+	
+	public void inOrder(Node focusNode) {
+		if (focusNode != null) {
+			inOrder(focusNode.left);
+			System.out.println(focusNode.toString());
+			inOrder(focusNode.right);
+		}
+	} // inOrder
+	
+	public void preOrder(Node focusNode) {
+		if (focusNode != null) {
+			System.out.println(focusNode.toString());
+			preOrder(focusNode.left);
+			preOrder(focusNode.right);
+		}
+	} // preOrder
+	
+	public void postOrder(Node focusNode) {
+		if (focusNode != null) {
+			postOrder(focusNode.left);
+			postOrder(focusNode.right);
+			System.out.println(focusNode.toString());
+		}
+	} // postOrder
+}
+
+class Node {
+	int key;
+	String name;
+	Node left;
+	Node right;
+	
+	Node(int key, String name) {
+		this.key = key;
+		this.name = name;
+	}
+	
+	public String toString() {
+		return name + " has a key " + key;
+	}
+}
